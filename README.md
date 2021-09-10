@@ -23,6 +23,9 @@ python train.py -i "train_qeppi.npy" -o "./models"
 
 ```
 
+## Generation
+novel compound generation please follow notebook:
+var s='iPPIGAN_generate.ipynb'
 
 
 

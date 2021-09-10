@@ -1,5 +1,6 @@
 # iPPIGAN
 
+De novo molecular design with deep molecular generative models for PPI inhibitors 
 
 https://github.com/compsciencelab/ligdream
 

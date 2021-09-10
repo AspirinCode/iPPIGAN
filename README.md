@@ -20,13 +20,14 @@ python prepare_data.py -i "train_qeppi.smi" -o "train_qeppi.npy"
 
 #the training model
 python train.py -i "train_qeppi.npy" -o "./models"
-
 ```
 
 ## Generation
 novel compound generation please follow notebook:
-var s='iPPIGAN_generate.ipynb'
 
+```python
+iPPIGAN_generate.ipynb
+```
 
 
 

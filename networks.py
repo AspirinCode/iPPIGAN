@@ -147,7 +147,7 @@ class DecoderRNN(nn.Module):
         """Samples SMILES tockens for given shape features (Greedy search)."""
         sampled_ids = []
         inputs = features.unsqueeze(1)
-        for i in range(62):
+        for i in range(80):
             hiddens, states = self.lstm(inputs, states)
             outputs = self.linear(hiddens.squeeze(1))
             predicted = outputs.max(1)[1]

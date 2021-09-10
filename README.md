@@ -29,6 +29,12 @@ novel compound generation please follow notebook:
 iPPIGAN_generate.ipynb
 ```
 
+## Model Metrics
+Molecular Sets (MOSES), a benchmarking platform to support research on machine learning for drug discovery. MOSES implements several popular molecular generation models and provides a set of metrics to evaluate the quality and diversity of generated molecules. With MOSES, MOSES aim to standardize the research on molecular generation and facilitate the sharing and comparison of new models.
+https://github.com/molecularsets/moses
+
+
+
 ## License
 Code is released under GNU AFFERO GENERAL PUBLIC LICENSE.
 

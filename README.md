@@ -29,6 +29,7 @@ novel compound generation please follow notebook:
 iPPIGAN_generate.ipynb
 ```
 
-
+## License
+Code is released under GNU AFFERO GENERAL PUBLIC LICENSE.
 
 

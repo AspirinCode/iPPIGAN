@@ -2,7 +2,9 @@
 
 De novo molecular design with deep molecular generative models for PPI inhibitors 
 
-https://github.com/compsciencelab/ligdream
+
+## Acknowledgements
+We thank the authors of LigDream: Shape-Based Compound Generation for releasing their code. The code in this repository is based on their source code release (https://github.com/compsciencelab/ligdream). If you find this code useful, please consider citing their work.
 
 ## Requirements
 ```python

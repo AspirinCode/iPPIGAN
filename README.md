@@ -19,7 +19,7 @@ HTMD==1.13.9
 ```python
 #conda activate iPPIGAN
 #construct a set of training molecules:
-python prepare_data.py -i "train_ippi.smi" -o "train_qeppi.npy"
+python prepare_data.py -i "train_ippi.smi" -o "train_ippi.npy"
 
 #the training model
 python train.py -i "train_ippi.npy" -o "./models"

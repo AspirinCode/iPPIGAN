@@ -76,7 +76,7 @@ for i, (mol_batch, caption, lengths) in tq_gen:
     real_label = Variable(torch.ones(num_img)).cuda()
     fake_label = Variable(torch.zeros(num_img)).cuda()
     #print('fake label', fake_label.shape)
-    ########判别器训练train#######
+    ########Train the discriminator#######
     real_out = D(real_data.float())  # 将真实图片放入判别器中
     
     d_loss_real = dg_criterion(real_out.view(-1), real_label)  # 得到真实图片的loss
@@ -95,7 +95,7 @@ for i, (mol_batch, caption, lengths) in tq_gen:
     d_loss.backward()  # 将误差反向传播
     d_optimizer.step()
     
-    #==================训练生成器========
+    #==================Training generator========
     z = Variable(torch.randn(num_img, 128, 12, 12, 12)).cuda()
     fake_data = G(z)
     output = D(fake_data)
@@ -151,7 +151,7 @@ for i, (mol_batch, caption, lengths) in tq_gen:
             lr = param_group["lr"] / 2.
             param_group["lr"] = lr
         
-    if i == 210000:
+    if i == 120000:
         # We are Done!
         log_file.close()
         break

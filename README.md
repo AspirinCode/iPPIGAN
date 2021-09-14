@@ -37,6 +37,11 @@ Molecular Sets (MOSES), a benchmarking platform to support research on machine l
 https://github.com/molecularsets/moses
 
 
+### QEPPI
+quantitative estimate of protein-protein interaction targeting drug-likeness
+```
+Kosugi T, Ohue M. Quantitative estimate of protein-protein interaction targeting drug-likeness. ChemRxiv. Cambridge: Cambridge Open Engage; 2021;  This content is a preprint and has not been peer-reviewed.
+```
 
 ## License
 Code is released under GNU AFFERO GENERAL PUBLIC LICENSE.

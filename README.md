@@ -41,7 +41,7 @@ https://github.com/molecularsets/moses
 quantitative estimate of protein-protein interaction targeting drug-likeness
 
 Kosugi T, Ohue M. Quantitative estimate of protein-protein interaction targeting drug-likeness. ChemRxiv. Cambridge: Cambridge Open Engage; 2021;  This content is a preprint and has not been peer-reviewed.
-
+https://doi.org/10.33774/chemrxiv-2021-psqq4-v2
 
 ## License
 Code is released under GNU AFFERO GENERAL PUBLIC LICENSE.

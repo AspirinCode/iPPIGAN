@@ -184,7 +184,7 @@ class DecoderRNN(nn.Module):
                     valid_token = rand_num < iter_sum
                     update_indecies = np.logical_and(valid_token,
                                                      np.logical_not(tokens.astype(np.bool)))
-                    tokens[update_indecies] = i
+                    tokens[update_indecies] = i+1
 
                 # put back on the GPU.
                 if probs.is_cuda:

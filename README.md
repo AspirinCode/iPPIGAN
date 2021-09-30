@@ -2,6 +2,7 @@
 
 De novo molecular design with deep molecular generative models for PPI inhibitors 
 
+![Model Architecture of iPPIGAN](https://github.com/AspirinCode/iPPIGAN/blob/main/Image/iPPIGAN.png)
 
 ## Acknowledgements
 We thank the authors of LigDream: Shape-Based Compound Generation for releasing their code. The code in this repository is based on their source code release (https://github.com/compsciencelab/ligdream). If you find this code useful, please consider citing their work.

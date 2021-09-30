@@ -16,6 +16,10 @@ RDKit==2017.09.2.0
 HTMD==1.13.9
 ```
 
+https://github.com/rdkit/rdkit
+
+https://github.com/Acellera/htmd
+
 ## Training
 ```python
 #conda activate iPPIGAN

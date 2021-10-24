@@ -48,7 +48,10 @@ https://github.com/molecularsets/moses
 
 ### QEPPI
 quantitative estimate of protein-protein interaction targeting drug-likeness
+
 https://github.com/ohuelab/QEPPI
+
+Kosugi T, Ohue M. Quantitative estimate index for early-stage screening of compounds targeting protein-protein interactions. International Journal of Molecular Sciences, 22(20): 10925, 2021. doi: 10.3390/ijms222010925
 
 Kosugi T, Ohue M. Quantitative estimate of protein-protein interaction targeting drug-likeness. ChemRxiv. Cambridge: Cambridge Open Engage; 2021;  This content is a preprint and has not been peer-reviewed.
 https://doi.org/10.33774/chemrxiv-2021-psqq4-v2

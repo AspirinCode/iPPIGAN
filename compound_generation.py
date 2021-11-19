@@ -44,11 +44,9 @@ class CompoundGenerator:
         self.use_cuda = False
         self.encoder = EncoderCNN(8)
         self.decoder = DecoderRNN(512, 1024, 29, 1)
-#        self.vae_model = LigandVAE(use_cuda=use_cuda)
         self.D = discriminator(nc=8,use_cuda=True)
         self.G = generator(nc=8,use_cuda=True)
 
-#        self.vae_model.eval()
         self.D.eval()
         self.G.eval()
         self.encoder.eval()
@@ -58,7 +56,6 @@ class CompoundGenerator:
             assert torch.cuda.is_available()
             self.encoder.cuda()
             self.decoder.cuda()
- #           self.vae_model.cuda()
             self.D.cuda()
             self.G.cuda()
             self.use_cuda = True

@@ -59,7 +59,7 @@ encoder.train()
 decoder.train()
 
 # GAN optimizer
-dg_criterion = nn.BCELoss()  # 是单目标二分类交叉熵函数
+dg_criterion = nn.BCELoss()
 d_optimizer = torch.optim.Adam(D.parameters(), lr=0.001)
 g_optimizer = torch.optim.Adam(G.parameters(), lr=0.001)
 z_dimension = 32
@@ -77,9 +77,9 @@ for i, (mol_batch, caption, lengths) in tq_gen:
     fake_label = Variable(torch.zeros(num_img)).cuda()
     #print('fake label', fake_label.shape)
     ########Train the discriminator#######
-    real_out = D(real_data.float())  # 将真实图片放入判别器中
+    real_out = D(real_data.float())
     
-    d_loss_real = dg_criterion(real_out.view(-1), real_label)  # 得到真实图片的loss
+    d_loss_real = dg_criterion(real_out.view(-1), real_label)
     real_scores = real_out
     
     z = Variable(torch.randn(num_img, 128, 12, 12, 12)).cuda()
@@ -90,9 +90,9 @@ for i, (mol_batch, caption, lengths) in tq_gen:
     d_loss_fake = dg_criterion(fake_out.view(-1), fake_label)
     fake_scores = fake_out
     
-    d_loss = d_loss_real + d_loss_fake  # 损失包括判真损失和判假损失
-    d_optimizer.zero_grad()  # 在反向传播之前，先将梯度归0
-    d_loss.backward()  # 将误差反向传播
+    d_loss = d_loss_real + d_loss_fake
+    d_optimizer.zero_grad()
+    d_loss.backward()
     d_optimizer.step()
     
     #==================Training generator========

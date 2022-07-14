@@ -62,5 +62,5 @@ Code is released under GNU AFFERO GENERAL PUBLIC LICENSE.
 
 ## Cite:
 
-https://doi.org/10.1093/bib/bbac285
+Jianmin Wang, Yanyi Chu, Jiashun Mao, Hyeon-Nae Jeon, Haiyan Jin, Amir Zeb, Yuil Jang, Kwang-Hwi Cho, Tao Song, Kyoung Tai No, De novo molecular design with deep molecular generative models for PPI inhibitors, Briefings in Bioinformatics, 2022;, bbac285, https://doi.org/10.1093/bib/bbac285
 

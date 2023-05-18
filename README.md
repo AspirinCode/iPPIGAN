@@ -4,21 +4,30 @@ De novo molecular design with deep molecular generative models for PPI inhibitor
 
 ![Model Architecture of iPPIGAN](https://github.com/AspirinCode/iPPIGAN/blob/main/Image/iPPIGAN.png)
 
+
+## Update
+Update the API for calculating molecular voxels from htmd to the latest moleculekit.
+
+```shell
+htmd==1.13.9 －－＞ moleculekit==1.6.9
+```
+
+
 ## Acknowledgements
 We thank the authors of LigDream: Shape-Based Compound Generation for releasing their code. The code in this repository is based on their source code release (https://github.com/compsciencelab/ligdream). If you find this code useful, please consider citing their work.
 
 ## Requirements
 ```python
-Python==3.6
+Python==3.8
 pytorch==1.9.0
 keras==2.2.2
-RDKit==2017.09.2.0
-HTMD==1.13.9
+RDKit==2023.03.1
+moleculekit==1.6.9
 ```
 
 https://github.com/rdkit/rdkit
 
-https://github.com/Acellera/htmd
+https://github.com/Acellera/moleculekit
 
 ## Training
 ```python

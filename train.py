@@ -2,6 +2,7 @@
 # Copying and distribution is allowed under AGPLv3 license
 
 import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 import sys
 import torch
 import torch.autograd
@@ -26,22 +27,22 @@ args = vars(parser.parse_args())
 
 cap_loss = 0.
 caption_start = 4000
-batch_size = 128
+batch_size = 256
 
 savedir = args["output_dir"]
 os.makedirs(savedir, exist_ok=True)
 smiles = np.load(args["input"])
 
 import multiprocessing
-multiproc = multiprocessing.Pool(6)
+multiproc = multiprocessing.Pool(14)
 my_gen = queue_datagen(smiles, batch_size=batch_size, mp_pool=multiproc)
-mg = GeneratorEnqueuer(my_gen, seed=0)
+mg = GeneratorEnqueuer(my_gen)
 mg.start()
 mt_gen = mg.get()
 
 # Define the networks
 encoder = EncoderCNN(8)
-decoder = DecoderRNN(512, 1024, 29, 1)
+decoder = DecoderRNN(512, 1024, 38, 1)
 D = discriminator(nc=8,use_cuda=True)
 G = generator(nc=8,use_cuda=True)
 
@@ -51,7 +52,7 @@ D.cuda()
 G.cuda()
 
 # Caption optimizer
-criterion = nn.CrossEntropyLoss()
+criterion = nn.CrossEntropyLoss(ignore_index = 0)
 caption_params = list(decoder.parameters()) + list(encoder.parameters())
 caption_optimizer = torch.optim.Adam(caption_params, lr=0.001)
 
@@ -59,7 +60,7 @@ encoder.train()
 decoder.train()
 
 # GAN optimizer
-dg_criterion = nn.BCELoss()
+dg_criterion = nn.BCELoss()  # 是单目标二分类交叉熵函数
 d_optimizer = torch.optim.Adam(D.parameters(), lr=0.001)
 g_optimizer = torch.optim.Adam(G.parameters(), lr=0.001)
 z_dimension = 32
@@ -67,8 +68,8 @@ z_dimension = 32
 tq_gen = tqdm(enumerate(mt_gen))
 log_file = open(os.path.join(savedir, "log.txt"), "w")
 cap_loss = 0.
-#caption_start = 4000
-caption_start = 0
+caption_start = 4000
+
 
 for i, (mol_batch, caption, lengths) in tq_gen:
     num_img = mol_batch.size(0)
@@ -76,10 +77,10 @@ for i, (mol_batch, caption, lengths) in tq_gen:
     real_label = Variable(torch.ones(num_img)).cuda()
     fake_label = Variable(torch.zeros(num_img)).cuda()
     #print('fake label', fake_label.shape)
-    ########Train the discriminator#######
-    real_out = D(real_data.float())
+    ########判别器训练train#######
+    real_out = D(real_data.float())  # 将真实图片放入判别器中
     
-    d_loss_real = dg_criterion(real_out.view(-1), real_label)
+    d_loss_real = dg_criterion(real_out.view(-1), real_label)  # 得到真实图片的loss
     real_scores = real_out
     
     z = Variable(torch.randn(num_img, 128, 12, 12, 12)).cuda()
@@ -90,35 +91,38 @@ for i, (mol_batch, caption, lengths) in tq_gen:
     d_loss_fake = dg_criterion(fake_out.view(-1), fake_label)
     fake_scores = fake_out
     
-    d_loss = d_loss_real + d_loss_fake
-    d_optimizer.zero_grad()
-    d_loss.backward()
+    d_loss = d_loss_real + d_loss_fake  # 损失包括判真损失和判假损失
+    d_optimizer.zero_grad()  # 在反向传播之前，先将梯度归0
+    d_loss.backward()  # 将误差反向传播
     d_optimizer.step()
     
-    #==================Training generator========
+    #==================训练生成器========
     z = Variable(torch.randn(num_img, 128, 12, 12, 12)).cuda()
     fake_data = G(z)
     output = D(fake_data)
     #print(output.view(-1).shape, real_label.shape)
     g_loss = dg_criterion(output.view(-1), real_label)
     g_optimizer.zero_grad()
-    g_loss.backward()
+    g_loss.backward() #retain_graph=True retain_graph=True if i >= caption_start else False
     g_optimizer.step()
 	
     recon_batch = G(z.detach())
     if i >= caption_start:  # Start by autoencoder optimization
-        captions = Variable(caption.cuda())
-        targets = pack_padded_sequence(captions, lengths, batch_first=True)[0]
-        
+        caption = Variable(caption.cuda())
+
+        targets = pack_padded_sequence(caption, lengths, batch_first=True)[0]
+
         decoder.zero_grad()
         encoder.zero_grad()
         features = encoder(recon_batch)
-        outputs = decoder(features, captions, lengths)
+        outputs = decoder(features, caption, lengths)
         cap_loss = criterion(outputs, targets)
-        cap_loss.backward()
+
+        cap_loss.backward()  #
+        #torch.nn.utils.clip_grad_norm_(decoder.parameters(), 1)
         caption_optimizer.step()
         
-    break
+    
 
     if (i + 1) % 5000 == 0:
         torch.save(decoder.state_dict(),
@@ -151,7 +155,7 @@ for i, (mol_batch, caption, lengths) in tq_gen:
             lr = param_group["lr"] / 2.
             param_group["lr"] = lr
         
-    if i == 120000:
+    if i == 210000:
         # We are Done!
         log_file.close()
         break

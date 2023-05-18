@@ -5,9 +5,14 @@ import torch
 import rdkit
 from rdkit import Chem
 from rdkit.Chem import AllChem
-from htmd.molecule.util import uniformRandomRotation
-from htmd.smallmol.smallmol import SmallMol
-from htmd.molecule.voxeldescriptors import _getOccupancyC, _getGridCenters
+
+#from htmd.molecule.util import uniformRandomRotation
+#from htmd.smallmol.smallmol import SmallMol
+#from htmd.molecule.voxeldescriptors import _getOccupancyC, _getGridCenters
+
+from moleculekit.smallmol.smallmol import SmallMol
+from moleculekit.tools.voxeldescriptors import getVoxelDescriptors
+
 
 import numpy as np
 import multiprocessing
@@ -15,9 +20,9 @@ import math
 import random
 
 vocab_list = ["pad", "start", "end",
-              "C", "c", "N", "n", "S", "s", "P", "O", "o",
+              "C", "c", "N", "n", "S", "s", "P", "p", "O", "o",
               "B", "F", "I",
-              "Cl", "[nH]", "Br", # "X", "Y", "Z",
+              "X", "Y", "Z",  #"Cl", "[nH]", "Br"
               "1", "2", "3", "4", "5", "6",
               "#", "=", "-", "(", ")","/","\\","@","[","]","H","+","7"  # Misc
 ]
@@ -30,7 +35,7 @@ resolution = 1.
 size = 24
 N = [size, size, size]
 bbm = (np.zeros(3) - float(size * 1. / 2))
-global_centers = _getGridCenters(bbm, N, resolution)
+#global_centers = _getGridCenters(bbm, N, resolution)
 
 
 def string_gen_V1(in_string):
@@ -70,7 +75,7 @@ def generate_representation(in_smile):
         AllChem.EmbedMolecule(mh)
         Chem.AllChem.MMFFOptimizeMolecule(mh)
         m = Chem.RemoveHs(mh)
-        mol = SmallMol(m)
+        mol = SmallMol(m, force_reading=True,fixHs=False)
         return mol
     except:  # Rarely the conformer generation fails
         return None
@@ -159,6 +164,8 @@ def generate_representation_v1(smile):
     end_token = smile_str.index(2)
     smile_str = "".join([vocab_i2c_v1[i] for i in smile_str[1:end_token]])
 
+    smile_str = smile_str.replace("X","Cl").replace("Y","[nH]").replace("Z","Br")
+
     mol = generate_representation(smile_str)
     if mol is None:
         return None
@@ -169,6 +176,44 @@ def generate_representation_v1(smile):
     vox = voxelize(sigmas, coords, lig_center)
 
     return torch.Tensor(vox), torch.Tensor(smile), end_token + 1
+
+def generate_representation_v2(smile):
+    """
+    Generate voxelized and string representation of a molecule
+    """
+    # Convert smile to 3D structure
+
+    smile_str = list(smile)
+    end_token = smile_str.index(2)
+    smile_str = "".join([vocab_i2c_v1[i] for i in smile_str[1:end_token]])
+
+    smile_str = smile_str.replace("X","Cl").replace("Y","[nH]").replace("Z","Br")
+
+    mol = generate_representation(smile_str)
+    if mol is None:
+        return None
+
+    try:
+        center = mol.getCenter()
+        box = [size, size, size]  #size = 24
+        #getVoxelDescriptors calculates feature of the mol object and return features as array, centers of voxel
+        #The features define the 8 feature of the voxel, (‘hydrophobic’, ‘aromatic’, ‘hbond_acceptor’, ‘hbond_donor’, ‘positive_ionizable’, ‘negative_ionizable’, ‘metal’, ‘occupancies’).
+        mol_vox, mol_centers, mol_N = getVoxelDescriptors(mol, boxsize=box, voxelsize=1, buffer=0, center=center,validitychecks =False)
+        #print(mol_vox, mol_centers, mol_N ) #mol_N = [35 35 35]
+
+        #print(mol_vox.shape,mol_centers.shape,mol_N.shape)  #(42875, 8) (42875, 3) (3,)
+
+        mol_vox_t = mol_vox.transpose().reshape([1, mol_vox.shape[1], mol_N[0], mol_N[1], mol_N[2]])
+    except:
+        print("Can not Voxelization")
+        #sys.exit()
+        return None
+
+    finish_combine = np.squeeze(mol_vox_t)
+
+    #print(finish_combine.shape)
+
+    return torch.Tensor(finish_combine), torch.Tensor(smile), end_token + 1
 
 
 def gather_fn(in_data):
@@ -200,7 +245,7 @@ class Batch_prep:
             raise NotImplementedError("Use multiprocessing for now!")
 
     def transform_data(self, smiles):
-        inputs = self.mp.map(generate_representation_v1, smiles)
+        inputs = self.mp.map(generate_representation_v2, smiles)
 
         # Sometimes representation generation fails
         inputs = list(filter(lambda x: x is not None, inputs))

@@ -129,15 +129,15 @@ class DecoderRNN(nn.Module):
     def forward(self, features, captions, lengths):
         """Decode shapes feature vectors and generates SMILES."""
         embeddings = self.embed(captions)
-        print(embeddings.shape,captions.shape)
+        #print(embeddings.shape,captions.shape)
 
         embeddings = torch.cat((features.unsqueeze(1), embeddings), 1)
 
-        print(embeddings.shape,features.shape)
+        #print(embeddings.shape,features.shape)
 
         packed = pack_padded_sequence(embeddings, lengths, batch_first=True)
 
-        print(packed,packed[0].shape,sum(packed[1]),sum(lengths))
+        #print(packed,packed[0].shape,sum(packed[1]),sum(lengths))
 
         hiddens, _ = self.lstm(packed)
         outputs = self.linear(hiddens[0])
@@ -147,7 +147,7 @@ class DecoderRNN(nn.Module):
         """Samples SMILES tockens for given shape features (Greedy search)."""
         sampled_ids = []
         inputs = features.unsqueeze(1)
-        for i in range(80):
+        for i in range(75):
             hiddens, states = self.lstm(inputs, states)
             outputs = self.linear(hiddens.squeeze(1))
             predicted = outputs.max(1)[1]
@@ -160,7 +160,7 @@ class DecoderRNN(nn.Module):
         """Samples SMILES tockens for given shape features (probalistic picking)."""
         sampled_ids = []
         inputs = features.unsqueeze(1)
-        for i in range(62):  # maximum sampling length
+        for i in range(130):  # maximum sampling length
             hiddens, states = self.lstm(inputs, states)
             outputs = self.linear(hiddens.squeeze(1))
             if i == 0:
@@ -184,7 +184,7 @@ class DecoderRNN(nn.Module):
                     valid_token = rand_num < iter_sum
                     update_indecies = np.logical_and(valid_token,
                                                      np.logical_not(tokens.astype(np.bool)))
-                    tokens[update_indecies] = i+1
+                    tokens[update_indecies] = i
 
                 # put back on the GPU.
                 if probs.is_cuda:

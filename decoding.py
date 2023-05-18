@@ -2,9 +2,9 @@
 # Copying and distribution is allowed under AGPLv3 license
 
 vocab_list = ["pad", "start", "end",
-    "C", "c", "N", "n", "S", "s", "P", "O", "o",
+    "C", "c", "N", "n", "S", "s", "P", "p", "O", "o",
     "B", "F", "I",
-    "Cl", "[nH]", "Br", # "X", "Y", "Z",
+    "X", "Y", "Z", #"Cl", "[nH]", "Br"
     "1", "2", "3", "4", "5", "6",
     "#", "=", "-", "(", ")","/","\\","@","[","]","H","+","7"  # Misc
 ]
@@ -25,5 +25,6 @@ def decode_smiles(in_tensor):
             if xchar == 2:
                 break
             csmile += vocab_i2c_v1[xchar]
+        csmile = csmile.replace("X","Cl").replace("Y","[nH]").replace("Z","Br")
         gen_smiles.append(csmile)
     return gen_smiles

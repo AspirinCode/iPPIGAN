@@ -43,10 +43,12 @@ class CompoundGenerator:
 
         self.use_cuda = False
         self.encoder = EncoderCNN(8)
-        self.decoder = DecoderRNN(512, 1024, 29, 1)
+        self.decoder = DecoderRNN(512, 1024, 38, 1)
+#        self.vae_model = LigandVAE(use_cuda=use_cuda)
         self.D = discriminator(nc=8,use_cuda=True)
         self.G = generator(nc=8,use_cuda=True)
 
+#        self.vae_model.eval()
         self.D.eval()
         self.G.eval()
         self.encoder.eval()
@@ -56,6 +58,7 @@ class CompoundGenerator:
             assert torch.cuda.is_available()
             self.encoder.cuda()
             self.decoder.cuda()
+ #           self.vae_model.cuda()
             self.D.cuda()
             self.G.cuda()
             self.use_cuda = True
@@ -102,18 +105,7 @@ class CompoundGenerator:
         :return: list of RDKit molecules.
         """
 
-        shape_input, cond_input = get_mol_voxels(smile_str)
-        if self.use_cuda:
-            shape_input = shape_input.cuda()
-            cond_input = cond_input.cuda()
 
-        shape_input = shape_input.unsqueeze(0).repeat(n_attemps, 1, 1, 1, 1)
-        cond_input = cond_input.unsqueeze(0).repeat(n_attemps, 1, 1, 1, 1)
-
-        shape_input = Variable(shape_input, volatile=True)
-        cond_input = Variable(cond_input, volatile=True)
-
-        #recoded_shapes, _, _ = self.G(shape_input, cond_input, lam_fact)
         z = Variable(torch.randn(n_attemps, 128, 12, 12, 12)).cuda()
         recoded_shapes = self.G(z)
         smiles = self.caption_shape(recoded_shapes, probab=probab)

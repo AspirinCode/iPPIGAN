@@ -1,5 +1,5 @@
 [![License: GNU](https://img.shields.io/badge/License-GNU-yellow)](https://github.com/AspirinCode/iPPIGAN)
-
+[![Briefings in Bioinformatics](https://img.shields.io/badge/10.1093%2Fbib%2Fbbac285-green)](https://doi.org/10.1093/bib/bbac285)
 
 
 # iPPIGAN

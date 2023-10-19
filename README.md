@@ -1,3 +1,7 @@
+[![License: GNU](https://img.shields.io/badge/License-GNU-yellow)](https://github.com/AspirinCode/iPPIGAN)
+
+
+
 # iPPIGAN
 
 De novo molecular design with deep molecular generative models for PPI inhibitors 
